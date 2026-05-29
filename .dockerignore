@@ -1,0 +1,64 @@
+# Version control and CI
+.git
+.gitignore
+.github
+
+# Documentation and plans (not needed in images)
+docs
+*.md
+!services/**/README.md
+
+# Dependencies (reinstalled in image)
+node_modules
+**/node_modules
+
+# Build artifacts
+dist
+build
+**/dist
+**/build
+*.tsbuildinfo
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Tests and coverage
+coverage
+**/.nyc_output
+**/__tests__
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+
+# Logs and caches
+logs
+*.log
+npm-debug.log*
+.cache
+.eslintcache
+.turbo
+
+# Editor and OS
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# Local Docker data
+docker/volumes
+docker/.env
+
+# Frontend dev artifacts (when building backend images from repo root)
+frontend/dist
+frontend/.vite
+
+# Misc
+tmp
+temp
+*.local

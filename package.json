@@ -1,13 +1,30 @@
 {
   "name": "kafka-ec-docker-ecommerce-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
+  "private": true,
+  "description": "Event-driven e-commerce microservices with Kafka and Docker",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "workspaces": [
+    "shared",
+    "services/*",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build:shared": "npm run build -w @ecommerce/shared",
+    "prisma:generate": "npm run prisma:generate -w @ecommerce/shared",
+    "prisma:migrate": "npm exec -w @ecommerce/shared -- prisma migrate dev",
+    "prisma:studio": "npm exec -w @ecommerce/shared prisma studio",
+    "dev:infra": "docker compose -f docker/docker-compose.yml up -d",
+    "dev:infra:down": "docker compose -f docker/docker-compose.yml down",
+    "install:all": "npm install"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29",
+    "typescript": "^5.8.3"
+  }
 }
