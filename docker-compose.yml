@@ -4,7 +4,8 @@ networks:
 
 volumes:
   pgdata:
-  # Reserved for later: esdata, grafana-data, prometheus-data
+  esdata:
+  # Reserved for later: grafana-data, prometheus-data
 
 services:
   postgres:
@@ -117,6 +118,40 @@ services:
       KAFKA_CLUSTERS_0_NAME: ${KAFKA_CLUSTERS_0_NAME}
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: ${KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS}
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: elasticsearch
+    networks: [kafka-net]
+    restart: unless-stopped
+    ports:
+      - '${ELASTICSEARCH_PORT}:9200'
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: 'false'
+      ES_JAVA_OPTS: '-Xms512m -Xmx512m'
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'curl -sf http://localhost:9200/_cluster/health | grep -qE green|yellow']
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: kibana
+    networks: [kafka-net]
+    restart: unless-stopped
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    ports:
+      - '${KIBANA_PORT}:5601'
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+
   redis:
     image: redis:7-alpine
     container_name: redis
@@ -176,11 +211,17 @@ services:
         condition: service_healthy
       db-init:
         condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
     ports:
       - '${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT}'
     environment:
       PORT: ${PRODUCT_SERVICE_PORT}
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      KAFKA_BROKERS: ${KAFKA_BROKERS_DOCKER}
+      KAFKA_CLIENT_ID: product-service
     healthcheck:
       test:
         [
@@ -298,6 +339,44 @@ services:
       retries: 5
       start_period: 25s
 
+  search-service:
+    build:
+      context: .
+      dockerfile: services/search-service/Dockerfile
+    container_name: search-service
+    networks: [kafka-net]
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+      elasticsearch:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    ports:
+      - '${SEARCH_SERVICE_PORT}:${SEARCH_SERVICE_PORT}'
+    environment:
+      PORT: ${SEARCH_SERVICE_PORT}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      KAFKA_BROKERS: ${KAFKA_BROKERS_DOCKER}
+      KAFKA_CLIENT_ID: search-service
+      ES_NODE: http://elasticsearch:9200
+      ES_INDEX: ${ES_INDEX}
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -sf http://localhost:${SEARCH_SERVICE_PORT}/health | grep -q ok',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
   api-gateway:
     build:
       context: .
@@ -312,6 +391,8 @@ services:
         condition: service_healthy
       order-service:
         condition: service_healthy
+      search-service:
+        condition: service_healthy
     ports:
       - '${GATEWAY_PORT}:${GATEWAY_PORT}'
     environment:
@@ -320,6 +401,7 @@ services:
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
       PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
       ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
+      SEARCH_SERVICE_URL: ${SEARCH_SERVICE_URL}
     healthcheck:
       test:
         [

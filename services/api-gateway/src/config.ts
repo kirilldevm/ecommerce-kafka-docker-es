@@ -12,4 +12,5 @@ export const config = {
   authServiceUrl: requireEnv("AUTH_SERVICE_URL"),
   productServiceUrl: requireEnv("PRODUCT_SERVICE_URL"),
   orderServiceUrl: requireEnv("ORDER_SERVICE_URL"),
+  searchServiceUrl: requireEnv("SEARCH_SERVICE_URL"),
 } as const;

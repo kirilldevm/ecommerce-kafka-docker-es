@@ -25,3 +25,12 @@ export {
   type OrderStatusUpdatedEvent,
   type OrderStatusUpdatedPayload,
 } from "./delivery.events";
+
+export {
+  PRODUCT_EVENT_TYPES,
+  type ProductDeletedEvent,
+  type ProductDeletedPayload,
+  type ProductEventType,
+  type ProductUpsertEvent,
+  type ProductUpsertPayload,
+} from "./product.events";

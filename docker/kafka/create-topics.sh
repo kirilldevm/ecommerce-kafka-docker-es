@@ -9,6 +9,7 @@ TOPICS=(
   "order.status.updated"
   "orders.DLQ"
   "order-stats"
+  "products"
 )
 
 echo "Creating Kafka topics on ${BOOTSTRAP_SERVER}..."

@@ -12,6 +12,8 @@ import { config } from "./config";
 const productPublicProxy = createPublicProxy(config.productServiceUrl);
 const productProtectedProxy = createProtectedProxy(config.productServiceUrl);
 const orderProtectedProxy = createProtectedProxy(config.orderServiceUrl);
+const searchPublicProxy = createPublicProxy(config.searchServiceUrl);
+const searchProtectedProxy = createProtectedProxy(config.searchServiceUrl);
 
 export function createApp() {
   const app = express();
@@ -24,6 +26,9 @@ export function createApp() {
 
   app.get("/products", productPublicProxy);
   app.get("/products/:id", productPublicProxy);
+
+  app.get("/search/products", searchPublicProxy);
+  app.get("/search/orders", requireAuth, searchProtectedProxy);
 
   app.post(
     "/products",

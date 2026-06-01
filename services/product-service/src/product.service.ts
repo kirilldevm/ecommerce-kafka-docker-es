@@ -1,6 +1,7 @@
 import type { Product } from "@ecommerce/shared";
 import { prisma } from "@ecommerce/shared";
 import { Prisma } from "@prisma/client";
+import { publishProductDeleted, publishProductUpsert } from "./kafka";
 
 export class ProductError extends Error {
   constructor(
@@ -154,7 +155,9 @@ export async function createProduct(input: CreateProductInput) {
       },
     });
 
-    return formatProduct(product);
+    const formatted = formatProduct(product);
+    await publishProductUpsert(formatted);
+    return formatted;
   } catch (err) {
     if (err instanceof ProductError) {
       throw err;
@@ -186,11 +189,14 @@ export async function updateProduct(id: string, input: UpdateProductInput) {
     data,
   });
 
-  return formatProduct(product);
+  const formatted = formatProduct(product);
+  await publishProductUpsert(formatted);
+  return formatted;
 }
 
 export async function deleteProduct(id: string) {
   await getProductById(id);
 
   await prisma.product.delete({ where: { id } });
+  await publishProductDeleted(id);
 }
