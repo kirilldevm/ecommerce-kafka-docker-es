@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { routes } from '@/config/routes.config';
+import { getDefaultRouteForRole } from '@/config/routes.config';
 import { useAuth } from '@/context/auth.context';
 
 export function GuestRoute() {
-  const { isHydrated, isAuthenticated } = useAuth();
+  const { isHydrated, isAuthenticated, isAdmin } = useAuth();
 
   if (!isHydrated) {
     return (
@@ -14,7 +14,7 @@ export function GuestRoute() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to={routes.home} replace />;
+    return <Navigate to={getDefaultRouteForRole(isAdmin)} replace />;
   }
 
   return <Outlet />;
