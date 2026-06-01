@@ -11,7 +11,7 @@ import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { AdminProductsPlaceholderPage } from '@/pages/placeholders/AdminProductsPlaceholderPage';
 import { AnalyticsPlaceholderPage } from '@/pages/placeholders/AnalyticsPlaceholderPage';
-import { OrdersPlaceholderPage } from '@/pages/placeholders/OrdersPlaceholderPage';
+import { OrdersPage } from '@/pages/orders/OrdersPage';
 import { ProductSearchPlaceholderPage } from '@/pages/placeholders/ProductSearchPlaceholderPage';
 import { SearchOrdersPlaceholderPage } from '@/pages/placeholders/SearchOrdersPlaceholderPage';
 
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
         element: <MainLayout />,
         children: [
           { index: true, element: <RoleHomeRedirect /> },
-          { path: routes.orders.slice(1), element: <OrdersPlaceholderPage /> },
+          { path: routes.orders.slice(1), element: <OrdersPage /> },
           {
             element: <UserRoute />,
             children: [

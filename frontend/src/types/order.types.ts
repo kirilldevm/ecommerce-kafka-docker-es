@@ -46,6 +46,17 @@ export interface CreateOrderResponse {
   order: Order;
 }
 
+export interface OrdersListResponse {
+  orders: Order[];
+}
+
+export type OrderStreamEventType = 'connected' | 'order.created' | 'order.status.updated';
+
+export interface OrderStreamEvent {
+  type: OrderStreamEventType;
+  order?: Order;
+}
+
 export interface CartLineItem {
   productId: string;
   quantity: number;
