@@ -164,6 +164,34 @@ services:
       retries: 5
       start_period: 20s
 
+  product-service:
+    build:
+      context: .
+      dockerfile: services/product-service/Dockerfile
+    container_name: product-service
+    networks: [kafka-net]
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+    ports:
+      - '${PRODUCT_SERVICE_PORT}:${PRODUCT_SERVICE_PORT}'
+    environment:
+      PORT: ${PRODUCT_SERVICE_PORT}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -sf http://localhost:${PRODUCT_SERVICE_PORT}/health | grep -q ok',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
   api-gateway:
     build:
       context: .
@@ -174,12 +202,15 @@ services:
     depends_on:
       auth-service:
         condition: service_healthy
+      product-service:
+        condition: service_healthy
     ports:
       - '${GATEWAY_PORT}:${GATEWAY_PORT}'
     environment:
       PORT: ${GATEWAY_PORT}
       JWT_SECRET: ${JWT_SECRET}
       AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+      PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
     healthcheck:
       test:
         [
