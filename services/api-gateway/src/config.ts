@@ -11,4 +11,5 @@ export const config = {
   jwtSecret: requireEnv("JWT_SECRET"),
   authServiceUrl: requireEnv("AUTH_SERVICE_URL"),
   productServiceUrl: requireEnv("PRODUCT_SERVICE_URL"),
+  orderServiceUrl: requireEnv("ORDER_SERVICE_URL"),
 } as const;

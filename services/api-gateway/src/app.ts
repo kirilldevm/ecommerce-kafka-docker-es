@@ -11,6 +11,7 @@ import { config } from "./config";
 
 const productPublicProxy = createPublicProxy(config.productServiceUrl);
 const productProtectedProxy = createProtectedProxy(config.productServiceUrl);
+const orderProtectedProxy = createProtectedProxy(config.orderServiceUrl);
 
 export function createApp() {
   const app = express();
@@ -51,6 +52,11 @@ export function createApp() {
     requireAdmin,
     productProtectedProxy,
   );
+
+  app.get("/orders/stream", requireAuth, orderProtectedProxy);
+  app.get("/orders", requireAuth, orderProtectedProxy);
+  app.get("/orders/:id", requireAuth, orderProtectedProxy);
+  app.post("/orders", requireAuth, express.json(), orderProtectedProxy);
 
   app.use(errorHandler);
 
