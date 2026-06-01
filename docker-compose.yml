@@ -163,3 +163,30 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    container_name: api-gateway
+    networks: [kafka-net]
+    restart: unless-stopped
+    depends_on:
+      auth-service:
+        condition: service_healthy
+    ports:
+      - '${GATEWAY_PORT}:${GATEWAY_PORT}'
+    environment:
+      PORT: ${GATEWAY_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_SERVICE_URL: ${AUTH_SERVICE_URL}
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -sf http://localhost:${GATEWAY_PORT}/health | grep -q ok',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
