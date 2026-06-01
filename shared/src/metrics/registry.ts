@@ -2,7 +2,6 @@ import { collectDefaultMetrics, Registry } from 'prom-client';
 
 /**
  * Creates an isolated Prometheus registry for one microservice.
- * Default labels (e.g. service name) are attached to every metric.
  */
 export function createMetricsRegistry(serviceName: string): Registry {
   const registry = new Registry();

@@ -30,7 +30,7 @@ export interface MetricsResponse {
 }
 
 /**
- * Handler for `GET /metrics` — Prometheus scrapes this endpoint.
+ * Handler for `GET /metrics`
  */
 export function createMetricsHandler(registry: Registry) {
   return async (_req: unknown, res: MetricsResponse): Promise<void> => {

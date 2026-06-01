@@ -13,4 +13,5 @@ export const config = {
   productServiceUrl: requireEnv("PRODUCT_SERVICE_URL"),
   orderServiceUrl: requireEnv("ORDER_SERVICE_URL"),
   searchServiceUrl: requireEnv("SEARCH_SERVICE_URL"),
+  analyticsServiceUrl: requireEnv("ANALYTICS_SERVICE_URL"),
 } as const;

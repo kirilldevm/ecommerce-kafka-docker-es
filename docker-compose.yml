@@ -339,6 +339,40 @@ services:
       retries: 5
       start_period: 25s
 
+  analytics-service:
+    build:
+      context: .
+      dockerfile: services/analytics-service/Dockerfile
+    container_name: analytics-service
+    networks: [kafka-net]
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
+      kafka:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    ports:
+      - '${ANALYTICS_SERVICE_PORT}:${ANALYTICS_SERVICE_PORT}'
+    environment:
+      PORT: ${ANALYTICS_SERVICE_PORT}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      KAFKA_BROKERS: ${KAFKA_BROKERS_DOCKER}
+      KAFKA_CLIENT_ID: analytics-service
+    healthcheck:
+      test:
+        [
+          'CMD-SHELL',
+          'curl -sf http://localhost:${ANALYTICS_SERVICE_PORT}/health | grep -q ok',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+
   search-service:
     build:
       context: .
@@ -393,6 +427,8 @@ services:
         condition: service_healthy
       search-service:
         condition: service_healthy
+      analytics-service:
+        condition: service_healthy
     ports:
       - '${GATEWAY_PORT}:${GATEWAY_PORT}'
     environment:
@@ -402,6 +438,7 @@ services:
       PRODUCT_SERVICE_URL: ${PRODUCT_SERVICE_URL}
       ORDER_SERVICE_URL: ${ORDER_SERVICE_URL}
       SEARCH_SERVICE_URL: ${SEARCH_SERVICE_URL}
+      ANALYTICS_SERVICE_URL: ${ANALYTICS_SERVICE_URL}
     healthcheck:
       test:
         [
