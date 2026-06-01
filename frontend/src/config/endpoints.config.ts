@@ -5,4 +5,14 @@ export const endpoints = {
     refresh: '/auth/refresh',
     logout: '/auth/logout',
   },
+  products: {
+    list: '/products',
+    byId: (id: string) => `/products/${id}`,
+  },
+  orders: {
+    list: '/orders',
+    create: '/orders',
+    byId: (id: string) => `/orders/${id}`,
+    stream: '/orders/stream',
+  },
 } as const;

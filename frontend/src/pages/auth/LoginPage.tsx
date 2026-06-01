@@ -14,6 +14,7 @@ import {
   type LoginFormValues,
 } from '@/services/auth/auth.validation';
 import { useAuthStore } from '@/stores/auth/auth.store';
+import type { LoginCredentials } from '@/types/auth.types';
 import { Form, Formik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -41,7 +42,7 @@ export function LoginPage() {
         onSubmit={async (values, { setSubmitting }) => {
           clearError();
           try {
-            await login(values);
+            await login(values as LoginCredentials);
             const role = useAuthStore.getState().user?.role;
             navigate(getDefaultRouteForRole(role === 'ADMIN'), {
               replace: true,

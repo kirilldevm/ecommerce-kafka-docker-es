@@ -1,6 +1,6 @@
 import { routes } from '@/config/routes.config';
 import { useAuth } from '@/context/auth.context';
-import { ShopPlaceholderPage } from '@/pages/placeholders/ShopPlaceholderPage';
+import { ShopPage } from '@/pages/shop/ShopPage';
 import { Navigate } from 'react-router-dom';
 
 export function RoleHomeRedirect() {
@@ -10,5 +10,5 @@ export function RoleHomeRedirect() {
     return <Navigate to={routes.orders} replace />;
   }
 
-  return <ShopPlaceholderPage />;
+  return <ShopPage />;
 }
