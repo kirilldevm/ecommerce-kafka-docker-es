@@ -1,0 +1,40 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ec2-production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, x64, ec2]
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify Docker tools
+        run: |
+          docker --version
+          docker compose version
+
+      - name: Ensure env file exists
+        run: |
+          if [ ! -f ".env" ]; then
+            echo ".env file not found on runner workspace."
+            echo "Create .env on EC2 before running this workflow."
+            exit 1
+          fi
+
+      - name: Build and deploy stack
+        run: |
+          docker compose pull --ignore-pull-failures
+          docker compose up -d --build
+
+      - name: Prune dangling Docker images
+        run: docker image prune -f
