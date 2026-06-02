@@ -13,7 +13,7 @@ import { AdminProductsPlaceholderPage } from '@/pages/placeholders/AdminProducts
 import { AnalyticsPlaceholderPage } from '@/pages/placeholders/AnalyticsPlaceholderPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
 import { ProductSearchPlaceholderPage } from '@/pages/placeholders/ProductSearchPlaceholderPage';
-import { SearchOrdersPlaceholderPage } from '@/pages/placeholders/SearchOrdersPlaceholderPage';
+import { SearchOrdersPage } from '@/pages/search/SearchOrdersPage';
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +42,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: routes.searchOrders.slice(1),
-                element: <SearchOrdersPlaceholderPage />,
+                element: <SearchOrdersPage />,
               },
               {
                 path: routes.adminProducts.slice(1),
