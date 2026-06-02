@@ -20,6 +20,7 @@
     "compose:down": "docker compose down",
     "dev:infra": "docker compose up -d --build",
     "dev:infra:down": "docker compose down",
+    "seed:demo": "node scripts/seed-demo-data.cjs",
     "install:all": "npm install",
     "dev:frontend": "npm run dev -w @ecommerce/frontend"
   },
