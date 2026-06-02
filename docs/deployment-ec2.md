@@ -42,6 +42,17 @@ docker --version
 docker compose version
 ```
 
+If your instance is small (`t3.medium`) add swap to avoid Docker build OOM kills:
+
+```bash
+sudo fallocate -l 4G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+free -h
+```
+
 ## 3) Prepare app directory
 
 ```bash
@@ -125,6 +136,7 @@ docker compose down
 ## Notes
 
 - Workflow regenerates `.env` from secret `EC2_ENV_FILE` every run.
+- Workflow disables Docker Compose bake and limits build parallelism to reduce memory pressure.
 - Frontend is served by Nginx in `frontend` container and proxies `/api/*` to `api-gateway`.
 - If you use a domain, put DNS A record to EC2 public IP and update `CORS_ORIGINS`.
 

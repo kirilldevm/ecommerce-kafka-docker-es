@@ -125,4 +125,5 @@ npm run seed:demo
   - `.github/workflows/deploy-ec2.yml`
 - Step-by-step EC2 + Docker + runner setup:
   - `docs/deployment-ec2.md`
+- If deploy fails with `failed to execute bake: signal: killed`, check swap/instance memory guidance in `docs/deployment-ec2.md`.
 
