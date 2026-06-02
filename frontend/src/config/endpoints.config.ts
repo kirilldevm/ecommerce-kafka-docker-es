@@ -10,6 +10,7 @@ export const endpoints = {
     byId: (id: string) => `/products/${id}`,
   },
   search: {
+    products: '/search/products',
     orders: '/search/orders',
   },
   orders: {

@@ -12,7 +12,7 @@ import { RegisterPage } from '@/pages/auth/RegisterPage';
 import { AdminProductsPlaceholderPage } from '@/pages/placeholders/AdminProductsPlaceholderPage';
 import { AnalyticsPlaceholderPage } from '@/pages/placeholders/AnalyticsPlaceholderPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
-import { ProductSearchPlaceholderPage } from '@/pages/placeholders/ProductSearchPlaceholderPage';
+import { ProductSearchPage } from '@/pages/search/ProductSearchPage';
 import { SearchOrdersPage } from '@/pages/search/SearchOrdersPage';
 
 export const router = createBrowserRouter([
@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: routes.productSearch.slice(1),
-                element: <ProductSearchPlaceholderPage />,
+                element: <ProductSearchPage />,
               },
             ],
           },
