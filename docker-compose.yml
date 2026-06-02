@@ -459,10 +459,10 @@ services:
           'CMD-SHELL',
           'curl -sf http://localhost:${SEARCH_SERVICE_PORT}/health | grep -q ok',
         ]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 30s
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 120s
 
   api-gateway:
     build:

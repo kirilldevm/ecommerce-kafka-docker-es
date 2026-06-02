@@ -137,6 +137,7 @@ docker compose down
 
 - Workflow regenerates `.env` from secret `EC2_ENV_FILE` every run.
 - Workflow disables Docker Compose bake and limits build parallelism to reduce memory pressure.
+- `search-service` has an extended healthcheck window because it performs Elasticsearch/index sync before opening HTTP.
 - Frontend is served by Nginx in `frontend` container and proxies `/api/*` to `api-gateway`.
 - If you use a domain, put DNS A record to EC2 public IP and update `CORS_ORIGINS`.
 
