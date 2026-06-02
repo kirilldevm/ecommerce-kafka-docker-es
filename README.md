@@ -15,8 +15,9 @@ Event-driven e-commerce platform built with microservices, Kafka, Docker Compose
 
 ## Services and Ports
 
+- Frontend (Nginx via Docker): `http://localhost` (port `${FRONTEND_PORT}`, default `80`)
 - API Gateway: `http://localhost:8000`
-- Frontend (Vite): `http://localhost:5173`
+- Frontend (Vite dev mode): `http://localhost:5173`
 - Auth Service: `http://localhost:3006`
 - Product Service: `http://localhost:3007`
 - Order Service: `http://localhost:3001`
@@ -42,17 +43,21 @@ npm install
 cp .env.example .env
 ```
 
-3. Start infrastructure and services:
+3. Start infrastructure and services (includes frontend Nginx container):
 
 ```bash
 npm run compose:up
 ```
 
-4. Start frontend:
+4. Optional: run frontend in local dev mode instead of Nginx:
 
 ```bash
 npm run dev:frontend
 ```
+
+When running in Docker, frontend calls API through same-origin proxy:
+- Browser requests `/api/*`
+- Nginx forwards to `api-gateway:8000` (and handles `/api/orders/stream` SSE without buffering)
 
 ## Demo Credentials
 
