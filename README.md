@@ -122,7 +122,7 @@ npm run seed:demo
 ## Deployment
 
 - GitHub Actions workflow for EC2 self-hosted runner:
-  - `.github/workflows/deploy-ec2-self-hosted.yml`
+  - `.github/workflows/deploy-ec2.yml`
 - Step-by-step EC2 + Docker + runner setup:
   - `docs/deployment-ec2.md`
 

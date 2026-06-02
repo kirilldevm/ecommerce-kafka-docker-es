@@ -11,6 +11,7 @@ concurrency:
 
 jobs:
   deploy:
+    environment: production
     runs-on: [self-hosted, linux, x64, ec2]
     timeout-minutes: 45
 
@@ -23,13 +24,16 @@ jobs:
           docker --version
           docker compose version
 
-      - name: Ensure env file exists
+      - name: Write .env from GitHub secret
+        env:
+          ENV_FILE_CONTENT: ${{ secrets.EC2_ENV_FILE }}
         run: |
-          if [ ! -f ".env" ]; then
-            echo ".env file not found on runner workspace."
-            echo "Create .env on EC2 before running this workflow."
+          if [ -z "$ENV_FILE_CONTENT" ]; then
+            echo "Secret EC2_ENV_FILE is empty or missing."
             exit 1
           fi
+          printf '%s\n' "$ENV_FILE_CONTENT" > .env
+          chmod 600 .env
 
       - name: Build and deploy stack
         run: |

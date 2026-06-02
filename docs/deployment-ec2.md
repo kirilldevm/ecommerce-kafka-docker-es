@@ -2,7 +2,7 @@
 
 This guide deploys the project directly on EC2 using the workflow:
 
-- `.github/workflows/deploy-ec2-self-hosted.yml`
+- `.github/workflows/deploy-ec2.yml`
 
 ## 1) Create EC2 instance
 
@@ -42,17 +42,25 @@ docker --version
 docker compose version
 ```
 
-## 3) Prepare app directory and env file
+## 3) Prepare app directory
 
 ```bash
 mkdir -p ~/apps
 cd ~/apps
 git clone <YOUR_REPO_URL> kafka-ec-docker-ecommerce-app
 cd kafka-ec-docker-ecommerce-app
-cp .env.example .env
 ```
 
-Edit `.env` for production values at least:
+## 4) Configure one GitHub environment secret
+
+In GitHub repo:
+
+- `Settings -> Environments -> New environment -> production`
+- Open `production` -> `Secrets` -> add:
+  - Name: `EC2_ENV_FILE`
+  - Value: full multi-line production `.env` contents
+
+Use strong production values at least for:
 
 - `JWT_SECRET`
 - `GRAFANA_ADMIN_PASSWORD`
@@ -60,7 +68,7 @@ Edit `.env` for production values at least:
 - `CORS_ORIGINS` (your real domain)
 - `FRONTEND_PORT` (usually `80`)
 
-## 4) Install GitHub self-hosted runner on EC2
+## 5) Install GitHub self-hosted runner on EC2
 
 In GitHub repo:
 
@@ -82,7 +90,7 @@ Workflow expects these labels:
 
 - `self-hosted, linux, x64, ec2`
 
-## 5) First deploy
+## 6) First deploy
 
 Option A (manual first run):
 
@@ -93,9 +101,9 @@ docker compose up -d --build
 Option B (recommended):
 
 - Open GitHub Actions
-- Run workflow **Deploy to EC2 (self-hosted runner)**
+- Run workflow **Deploy to EC2**
 
-## 6) Ongoing deploy flow
+## 7) Ongoing deploy flow
 
 - Push to `main` or `master`
 - Workflow runs on EC2 self-hosted runner
@@ -104,7 +112,7 @@ Option B (recommended):
   - `docker compose up -d --build`
   - image cleanup
 
-## 7) Useful operations
+## 8) Useful operations
 
 ```bash
 docker compose ps
@@ -116,7 +124,7 @@ docker compose down
 
 ## Notes
 
-- Keep `.env` on EC2 host (workflow requires it).
+- Workflow regenerates `.env` from secret `EC2_ENV_FILE` every run.
 - Frontend is served by Nginx in `frontend` container and proxies `/api/*` to `api-gateway`.
 - If you use a domain, put DNS A record to EC2 public IP and update `CORS_ORIGINS`.
 
