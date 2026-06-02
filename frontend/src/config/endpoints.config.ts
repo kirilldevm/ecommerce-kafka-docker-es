@@ -13,6 +13,9 @@ export const endpoints = {
     products: '/search/products',
     orders: '/search/orders',
   },
+  analytics: {
+    summary: '/analytics/summary',
+  },
   orders: {
     list: '/orders',
     create: '/orders',

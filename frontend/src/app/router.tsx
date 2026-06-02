@@ -9,7 +9,7 @@ import { AuthLayout } from '@/layouts/AuthLayout';
 import { MainLayout } from '@/layouts/MainLayout';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
-import { AnalyticsPlaceholderPage } from '@/pages/placeholders/AnalyticsPlaceholderPage';
+import { AnalyticsPage } from '@/pages/analytics/AnalyticsPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
 import { ProductSearchPage } from '@/pages/search/ProductSearchPage';
 import { AdminProductsPage } from '@/pages/products/AdminProductsPage';
@@ -38,7 +38,7 @@ export const router = createBrowserRouter([
             children: [
               {
                 path: routes.analytics.slice(1),
-                element: <AnalyticsPlaceholderPage />,
+                element: <AnalyticsPage />,
               },
               {
                 path: routes.searchOrders.slice(1),
