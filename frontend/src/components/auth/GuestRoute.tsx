@@ -3,9 +3,9 @@ import { getDefaultRouteForRole } from '@/config/routes.config';
 import { useAuth } from '@/context/auth.context';
 
 export function GuestRoute() {
-  const { isHydrated, isAuthenticated, isAdmin } = useAuth();
+  const { isHydrated, isSessionReady, isAuthenticated, isAdmin } = useAuth();
 
-  if (!isHydrated) {
+  if (!isHydrated || !isSessionReady) {
     return (
       <div className="flex min-h-svh items-center justify-center text-sm text-muted-foreground">
         Loading…

@@ -2,6 +2,16 @@ import { apiConfig } from '@/config/api.config';
 import { endpoints } from '@/config/endpoints.config';
 import type { OrderStreamEvent } from '@/types/order.types';
 
+export class OrderStreamError extends Error {
+  status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'OrderStreamError';
+    this.status = status;
+  }
+}
+
 function parseSseBlock(block: string): OrderStreamEvent | null {
   const trimmed = block.trim();
   if (!trimmed) {
@@ -28,16 +38,26 @@ export async function connectOrderStream(
   onEvent: (event: OrderStreamEvent) => void,
   signal: AbortSignal,
 ): Promise<void> {
-  const response = await fetch(`${apiConfig.baseUrl}${endpoints.orders.stream}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      Accept: 'text/event-stream',
+  const response = await fetch(
+    `${apiConfig.baseUrl}${endpoints.orders.stream}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'text/event-stream',
+      },
+      signal,
     },
-    signal,
-  });
+  );
+
+  if (response.status === 401) {
+    throw new OrderStreamError('Unauthorized', 401);
+  }
 
   if (!response.ok || !response.body) {
-    throw new Error('Failed to connect to order stream');
+    throw new OrderStreamError(
+      'Failed to connect to order stream',
+      response.status,
+    );
   }
 
   const reader = response.body.getReader();

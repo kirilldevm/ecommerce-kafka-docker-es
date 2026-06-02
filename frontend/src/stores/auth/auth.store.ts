@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { storageKeys } from '@/config/storage.config';
+import { clearRefreshInFlight } from '@/lib/auth-session';
 import { getApiErrorMessage } from '@/lib/api-error';
 import { authService } from '@/services/auth/auth.service';
 import type {
@@ -87,6 +88,7 @@ export const useAuthStore = create<AuthState>()(
         } catch {
           // Clear local session even if server logout fails
         } finally {
+          clearRefreshInFlight();
           set({
             user: null,
             accessToken: null,
@@ -111,6 +113,7 @@ export const useAuthStore = create<AuthState>()(
           });
           return true;
         } catch {
+          clearRefreshInFlight();
           set({
             user: null,
             accessToken: null,

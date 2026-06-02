@@ -1,4 +1,6 @@
 import { registerAccessTokenGetter } from '@/lib/api-client';
+import { ensureValidSession } from '@/lib/auth-session';
+import { isAccessTokenExpired } from '@/lib/jwt';
 import { useAuthStore } from '@/stores/auth/auth.store';
 import type { AuthUser } from '@/types/auth.types';
 import {
@@ -6,12 +8,14 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useState,
   type ReactNode,
 } from 'react';
 
 interface AuthContextValue {
   user: AuthUser | null;
   isHydrated: boolean;
+  isSessionReady: boolean;
   isSubmitting: boolean;
   error: string | null;
   isAuthenticated: boolean;
@@ -33,10 +37,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useAuthStore((s) => s.register);
   const logout = useAuthStore((s) => s.logout);
   const clearError = useAuthStore((s) => s.clearError);
-  const refreshSession = useAuthStore((s) => s.refreshSession);
   const accessToken = useAuthStore((s) => s.accessToken);
+  const refreshToken = useAuthStore((s) => s.refreshToken);
   const getAccessToken = useAuthStore((s) => s.getAccessToken);
-  const isAuthenticated = Boolean(accessToken && user);
+  const [isSessionReady, setIsSessionReady] = useState(false);
+
+  const isAuthenticated = Boolean(
+    user && refreshToken && accessToken && !isAccessTokenExpired(accessToken),
+  );
   const isAdmin = user?.role === 'ADMIN';
 
   useEffect(() => {
@@ -48,15 +56,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (user && !getAccessToken()) {
-      void refreshSession();
+    if (!user || !refreshToken) {
+      setIsSessionReady(true);
+      return;
     }
-  }, [getAccessToken, isHydrated, refreshSession, user]);
+
+    let cancelled = false;
+
+    void ensureValidSession().finally(() => {
+      if (!cancelled) {
+        setIsSessionReady(true);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isHydrated, refreshToken, user]);
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isHydrated,
+      isSessionReady,
       isSubmitting,
       error,
       isAuthenticated,
@@ -72,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isAdmin,
       isAuthenticated,
       isHydrated,
+      isSessionReady,
       isSubmitting,
       login,
       logout,
