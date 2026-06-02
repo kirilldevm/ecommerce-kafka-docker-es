@@ -15,3 +15,17 @@ export interface ProductsResponse {
 export interface ProductResponse {
   product: Product;
 }
+
+export interface CreateProductRequest {
+  name: string;
+  description?: string;
+  price: number;
+  stock: number;
+}
+
+export interface UpdateProductRequest {
+  name?: string;
+  description?: string | null;
+  price?: number;
+  stock?: number;
+}

@@ -9,10 +9,10 @@ import { AuthLayout } from '@/layouts/AuthLayout';
 import { MainLayout } from '@/layouts/MainLayout';
 import { LoginPage } from '@/pages/auth/LoginPage';
 import { RegisterPage } from '@/pages/auth/RegisterPage';
-import { AdminProductsPlaceholderPage } from '@/pages/placeholders/AdminProductsPlaceholderPage';
 import { AnalyticsPlaceholderPage } from '@/pages/placeholders/AnalyticsPlaceholderPage';
 import { OrdersPage } from '@/pages/orders/OrdersPage';
 import { ProductSearchPage } from '@/pages/search/ProductSearchPage';
+import { AdminProductsPage } from '@/pages/products/AdminProductsPage';
 import { SearchOrdersPage } from '@/pages/search/SearchOrdersPage';
 
 export const router = createBrowserRouter([
@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
               },
               {
                 path: routes.adminProducts.slice(1),
-                element: <AdminProductsPlaceholderPage />,
+                element: <AdminProductsPage />,
               },
             ],
           },
