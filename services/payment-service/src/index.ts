@@ -1,6 +1,9 @@
 import express from "express";
 import { config } from "./config";
-import { startPaymentConsumer, stopPaymentConsumer } from "./payment.processor";
+import {
+  startPaymentConsumer,
+  stopPaymentConsumer,
+} from "./consumers/payment.consumer";
 
 async function main() {
   const producer = await startPaymentConsumer();

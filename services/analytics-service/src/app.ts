@@ -1,19 +1,13 @@
-import { createMetricsHandler } from "@ecommerce/shared";
 import express from "express";
-import { asyncHandler, errorHandler, requireAdmin } from "./middleware";
-import { registry } from "./metrics";
-import { health, summary } from "./routes";
+import { createErrorHandler } from "./middleware";
+import { registerAnalyticsRoutes } from "./routes";
 
 export function createApp() {
   const app = express();
 
-  app.get("/health", asyncHandler(health));
-  app.get("/metrics", (req, res) => {
-    void createMetricsHandler(registry)(req, res);
-  });
-  app.get("/analytics/summary", requireAdmin, asyncHandler(summary));
+  registerAnalyticsRoutes(app);
 
-  app.use(errorHandler);
+  app.use(createErrorHandler());
 
   return app;
 }

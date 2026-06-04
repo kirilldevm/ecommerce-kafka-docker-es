@@ -8,7 +8,7 @@ import {
 import {
   startSearchConsumer,
   stopSearchConsumer,
-} from "./search.processor";
+} from "./consumers/search.consumer";
 
 async function main() {
   await ensureSearchIndex();

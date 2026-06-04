@@ -1,15 +1,15 @@
 import express from "express";
-import { asyncHandler, errorHandler, requireAuth } from "./middleware";
-import { health, searchOrdersRoute, searchProductsRoute } from "./routes";
+import * as searchController from "./controllers/search.controller";
+import { createErrorHandler } from "./middleware";
+import { registerSearchRoutes } from "./routes";
 
 export function createApp() {
   const app = express();
 
-  app.get("/health", asyncHandler(health));
-  app.get("/search/products", asyncHandler(searchProductsRoute));
-  app.get("/search/orders", requireAuth, asyncHandler(searchOrdersRoute));
+  app.get("/health", searchController.health);
+  registerSearchRoutes(app);
 
-  app.use(errorHandler);
+  app.use(createErrorHandler());
 
   return app;
 }

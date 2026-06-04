@@ -1,11 +1,14 @@
 import { createProducer } from "@ecommerce/shared";
 import { createApp } from "./app";
 import { config } from "./config";
-import { startKafkaConsumers, stopKafkaConsumers } from "./kafka.handlers";
+import {
+  startOrderConsumers,
+  stopOrderConsumers,
+} from "./consumers/order.consumers";
 
 async function main() {
   const producer = await createProducer(config.kafkaClientId);
-  await startKafkaConsumers();
+  await startOrderConsumers();
 
   const app = createApp(producer);
 
@@ -16,7 +19,7 @@ async function main() {
   const shutdown = async (signal: string) => {
     console.log(`${signal} received, shutting down...`);
     server.close();
-    await stopKafkaConsumers();
+    await stopOrderConsumers();
     await producer.disconnect();
     process.exit(0);
   };

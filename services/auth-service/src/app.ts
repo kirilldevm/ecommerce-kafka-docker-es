@@ -1,19 +1,17 @@
 import express from "express";
-import { errorHandler } from "./middleware";
-import { health, login, logout, refresh, register } from "./routes";
+import * as authController from "./controllers/auth.controller";
+import { createErrorHandler } from "./middleware";
+import { registerAuthRoutes } from "./routes";
 
 export function createApp() {
   const app = express();
 
   app.use(express.json());
 
-  app.get("/health", health);
-  app.post("/register", register);
-  app.post("/login", login);
-  app.post("/refresh", refresh);
-  app.post("/logout", logout);
+  app.get("/health", authController.health);
+  registerAuthRoutes(app);
 
-  app.use(errorHandler);
+  app.use(createErrorHandler());
 
   return app;
 }

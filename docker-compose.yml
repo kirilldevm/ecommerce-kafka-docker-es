@@ -43,6 +43,23 @@ services:
       sh -c "apk add --no-cache openssl &&
       npx --yes prisma@5.22.0 migrate deploy --schema=/app/prisma/schema.prisma"
 
+  db-seed:
+    image: node:20-alpine
+    networks: [kafka-net]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    command: >
+      sh -c "apk add --no-cache openssl &&
+      npm ci --silent &&
+      npm run prisma:generate &&
+      node scripts/seed-demo-data.cjs"
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.1
     container_name: zookeeper

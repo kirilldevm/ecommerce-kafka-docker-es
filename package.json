@@ -21,11 +21,15 @@
     "dev:infra": "docker compose up -d --build",
     "dev:infra:down": "docker compose down",
     "seed:demo": "node scripts/seed-demo-data.cjs",
+    "seed:demo:docker": "docker compose run --rm db-seed",
     "install:all": "npm install",
     "dev:frontend": "npm run dev -w @ecommerce/frontend"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
   },
   "devDependencies": {
     "@types/node": "^22.15.29",

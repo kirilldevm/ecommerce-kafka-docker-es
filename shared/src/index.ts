@@ -14,3 +14,4 @@ export type {
 export * from "./events";
 export * from "./kafka";
 export * from "./metrics";
+export * from "./http";

@@ -65,9 +65,21 @@ When running in Docker, frontend calls API through same-origin proxy:
   - Email: `admin@gmail.com`
   - Password: `adminadmin`
 
+## Service layout
+
+Microservices use a consistent folder structure (controllers, routes, DTOs with Zod, services, producers, consumers). See [docs/service-structure.md](docs/service-structure.md).
+
 ## Seed Demo Data
 
-Seed demo catalog products (idempotent: creates missing products and updates existing by name):
+Seed demo catalog products (idempotent: creates missing products and updates existing by name).
+
+On EC2 or any machine where only Docker is set up (no host `node_modules`):
+
+```bash
+npm run seed:demo:docker
+```
+
+Local (after `npm install` and `npm run prisma:generate`):
 
 ```bash
 npm run seed:demo

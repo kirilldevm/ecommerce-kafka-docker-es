@@ -133,6 +133,31 @@ docker compose restart frontend api-gateway
 docker compose down
 ```
 
+### Seed demo products
+
+The GitHub Actions runner checkout has no `node_modules`, so do not run `node scripts/seed-demo-data.cjs` on the host unless you installed dependencies first. Use the Compose one-off (connects to Postgres on the Docker network):
+
+```bash
+cd ~/actions-runner/_work/ecommerce-kafka-docker-es/ecommerce-kafka-docker-es
+# or your actual deploy directory with docker-compose.yml and .env
+npm run seed:demo:docker
+```
+
+Promote an existing user to admin (no Node required):
+
+```bash
+docker compose exec -T postgres psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c \
+  "UPDATE users SET role='ADMIN' WHERE email='admin@gmail.com';"
+```
+
+Local development (with deps installed):
+
+```bash
+npm install
+npm run prisma:generate
+npm run seed:demo
+```
+
 ## Notes
 
 - Workflow regenerates `.env` from secret `EC2_ENV_FILE` every run.

@@ -4,7 +4,7 @@ import { config } from "./config";
 import {
   startAnalyticsConsumer,
   stopAnalyticsConsumer,
-} from "./analytics.processor";
+} from "./consumers/analytics.consumer";
 
 async function main() {
   await bootstrapFromDatabase();

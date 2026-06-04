@@ -3,7 +3,7 @@ import { config } from "./config";
 import {
   startDeliveryConsumer,
   stopDeliveryConsumer,
-} from "./delivery.processor";
+} from "./consumers/delivery.consumer";
 
 async function main() {
   const producer = await startDeliveryConsumer();

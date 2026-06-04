@@ -1,9 +1,12 @@
 import { createApp } from "./app";
 import { config } from "./config";
-import { startProductKafka, stopProductKafka } from "./kafka";
+import {
+  startProductProducer,
+  stopProductProducer,
+} from "./producers/product.producer";
 
 async function main() {
-  await startProductKafka();
+  await startProductProducer();
 
   const app = createApp();
 
@@ -14,7 +17,7 @@ async function main() {
   const shutdown = async (signal: string) => {
     console.log(`${signal} received, shutting down...`);
     server.close();
-    await stopProductKafka();
+    await stopProductProducer();
     process.exit(0);
   };
 
